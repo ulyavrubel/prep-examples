@@ -1,1 +1,43 @@
-<div id="app"></div>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>AJAX ex</title>
+  </head>
+  <body>
+    <button onclick="load()">Load</button>
+    <script>
+      const container = document.createElement('div');
+      document.getElementsByTagName('body')[0].appendChild(container);
+
+      function load() {
+        const request = new XMLHttpRequest();
+
+        request.onreadystatechange = function () {
+          if (request.readyState == XMLHttpRequest.DONE) {
+            if (request.status === 200) {
+              const response = JSON.parse(request.responseText);
+              container.innerHTML = '';
+
+              response.data.forEach(({ fact }, index) => {
+                const factElement = document.createElement('div');
+                factElement.innerHTML = index + 1 + '. ' + fact;
+                container.appendChild(factElement);
+              });
+            } else {
+              console.error(request.response.error);
+              container.innerHTML = 'There was a problem with the request.';
+            }
+          } else {
+            container.innerHTML = 'Loading...';
+          }
+        };
+
+        request.open('GET', 'https://catfact.ninja/facts');
+        request.send();
+      }
+    </script>
+  </body>
+</html>

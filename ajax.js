@@ -20,25 +20,25 @@ function load() {
   const request = new XMLHttpRequest();
 
   request.onreadystatechange = function () {
-    const container = document.createElement('div');
-    container.className = 'container';
-
     if (request.readyState == XMLHttpRequest.DONE) {
-      if (httpRequest.status === 200) {
-        const response = JSON.parse(httpRequest.responseText);
-        console.log(response);
+      if (request.status === 200) {
+        const response = JSON.parse(request.responseText);
+        container.innerHTML = '';
+
+        response.data.forEach(({ fact }, index) => {
+          const factElement = document.createElement('div');
+          factElement.innerHTML = index + 1 + '. ' + fact;
+          container.appendChild(factElement);
+        });
       } else {
-        console.error('There was a problem with the request.');
+        console.error(request.response.error);
+        container.innerHTML = 'There was a problem with the request.';
       }
     } else {
       container.innerHTML = 'Loading...';
     }
-
-    document.getElementsByTagName('body').appendChild(container);
   };
 
-  request.open('GET', 'https://the-cocktail-db.p.rapidapi.com/popular.php');
-  request.setRequestHeader('X-RapidAPI-Host', 'the-cocktail-db.p.rapidapi.com');
-  request.setRequestHeader('X-RapidAPI-Key', 'SIGN-UP-FOR-KEY');
+  request.open('GET', 'https://catfact.ninja/facts');
   request.send();
 }
